@@ -1,4 +1,4 @@
-# Galen: A New Way to Find Diseases in Medical Images 
+# Galen: A New Way to Diagnose Medical Images 
 Siddhant Sharma, 2019
 
 ## Why
