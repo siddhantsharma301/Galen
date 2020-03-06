@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Loss Functions for Galen
 Author: Siddhant Sharma, 2019
@@ -24,12 +26,13 @@ vae234_layers = ['b2_r1', 'b3_r1', 'b4_r1']
 vae345_layers = ['b3_r1', 'b4_r1', 'b5_r1']
 vae1234_layers = ['b1_r1', 'b2_r1', 'b3_r1', 'b4_r1']
 
-class VGG(nn.Module):
+
+class VGGLossModel(nn.Module):
     """
     VGG model for perceptual loss
     """
     def __init__(self, content_layers):
-        super(VGG, self).__init__()
+        super(VGGLossModel, self).__init__()
         features = models.vgg19(pretrained=True).features
         self.layers = nn.Sequential()
 
@@ -38,7 +41,7 @@ class VGG(nn.Module):
             self.layers.add_module(name, module)
 
         # Turn off training for perceptual model
-        for param in self.features.parameters():
+        for param in features.parameters():
             param.requires_grad = False
 
         # Content layers
@@ -63,18 +66,18 @@ class VGG(nn.Module):
         return all_outputs
 
 
-class VGGLoss(nn.Module):
+class VGGPerceptualLoss(nn.Module):
     """
     VGG Perceptual Loss for Galen training
     """
-    def __init__(self, content_layers, reduction='sum'):
-        super(VGGLoss, self).__init__()
+    def __init__(self, content_layers, reduction='sum', device='cpu'):
+        super(VGGPerceptualLoss, self).__init__()
         self.criterion = nn.MSELoss(reduction=reduction)
-        self.vgg = VGG(content_layers).cpu()
+        self.vgg = VGGLossModel(content_layers).to(device)
     
     def forward(self, orig, recon):
-        orig_features = self.pretrained(orig)
-        recon_features = self.pretrained(recon)
+        orig_features = self.vgg(orig)
+        recon_features = self.vgg(recon)
         return self.loss(recon_features, orig_features)
 
     def loss(self, recon_features, orig_features):
@@ -99,3 +102,13 @@ class KLDLoss(nn.Module):
         elif self.reduction == 'sum':
             kld_loss = torch.sum(kld_loss)
         return kld_loss
+
+
+if __name__ == "__main__":
+    # Test everything works
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+    perceptual_loss_criterion = VGGPerceptualLoss('vae-1234', device=device) 
+    kld_loss_criterion = KLDLoss()
+
+    print("Everything's good so far!")
