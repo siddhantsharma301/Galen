@@ -27,12 +27,12 @@ vae345_layers = ['b3_r1', 'b4_r1', 'b5_r1']
 vae1234_layers = ['b1_r1', 'b2_r1', 'b3_r1', 'b4_r1']
 
 
-class VGGLossModel(nn.Module):
+class VGGFeatureExtractor(nn.Module):
     """
     VGG model for perceptual loss
     """
     def __init__(self, content_layers):
-        super(VGGLossModel, self).__init__()
+        super(VGGFeatureExtractor, self).__init__()
         features = models.vgg19(pretrained=True).features
         self.layers = nn.Sequential()
 
@@ -40,7 +40,7 @@ class VGGLossModel(nn.Module):
             name = layer_names[i]
             self.layers.add_module(name, module)
 
-        # Turn off training for perceptual model
+        # Turn off grad because it's a frozen model
         for param in features.parameters():
             param.requires_grad = False
 
@@ -52,8 +52,7 @@ class VGGLossModel(nn.Module):
         elif content_layers == "vae-345":
             self.content_layers = vae345_layers
         elif content_layers == 'vae-1234':
-            self.content_layers = vae1234_layers
-        
+            self.content_layers = vae1234_layers   
 
     def forward(self, inputs):
         batch_size = inputs.size(0)
@@ -73,12 +72,49 @@ class VGGPerceptualLoss(nn.Module):
     def __init__(self, content_layers, reduction='sum', device='cpu'):
         super(VGGPerceptualLoss, self).__init__()
         self.criterion = nn.MSELoss(reduction=reduction)
-        self.vgg = VGGLossModel(content_layers).to(device)
+        self.pretrained = VGGFeatureExtractor(content_layers).to(device)
     
     def forward(self, orig, recon):
-        orig_features = self.vgg(orig)
-        recon_features = self.vgg(recon)
+        orig_features = self.pretrained(orig)
+        recon_features = self.pretrained(recon)
         return self.loss(recon_features, orig_features)
+
+    def loss(self, recon_features, orig_features):
+        loss = 0
+        for recon, orig in zip(recon_features, orig_features):
+            loss += self.criterion(recon, orig)
+        return loss
+
+
+class Resnet18Extractor(nn.Module):
+    def __init__(self):
+        super(Resnet18Extractor, self).__init__()
+        # Get rid of head
+        self.model = nn.Sequential(*list(models.resnet18(pretrained=True).children())[:-2])
+        # Turn off grad because it's a frozen model
+        for name, params in self.model.named_parameters():
+            params.requires_grad = False
+
+    def forward(self, inputs):
+        batch_size = inputs.size(0)
+        all_outputs = []
+        output = inputs
+        for _, module in self.model.named_children():
+            output = module(output)
+            all_outputs.append(output.view(batch_size, -1))
+        return all_outputs
+
+
+class ResNetPerceptualLoss(nn.Module):
+    def __init__(self, reduction='mean', device='cpu'):
+        super(ResNetPerceptualLoss, self).__init__()
+        self.criterion = nn.MSELoss(reduction=reduction)
+        self.pretrained = Resnet18Extractor().to(device)
+    
+    def forward(self, x, recon_x):
+        x_f = self.pretrained(x)
+        recon_f = self.pretrained(recon_x)
+        return self.loss(recon_f, x_f)
 
     def loss(self, recon_features, orig_features):
         loss = 0
@@ -108,7 +144,8 @@ if __name__ == "__main__":
     # Test everything works
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-    perceptual_loss_criterion = VGGPerceptualLoss('vae-1234', device=device) 
+    vgg_perceptual_loss_criterion = VGGPerceptualLoss('vae-1234', device=device) 
+    resnet_perceptual_loss_crtierion = ResNetPerceptualLoss(device=device)
     kld_loss_criterion = KLDLoss()
 
     print("Everything's good so far!")
