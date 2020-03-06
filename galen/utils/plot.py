@@ -36,7 +36,9 @@ def plot_report(orig, recon, bbox, diff, cmap = mpl.cm.jet):
     """
     cmap = cmap
     norm = mpl.colors.Normalize(vmin=0, vmax=1)
-    plt.style.use('dark_background')
+
+    # Using dark mode is so extra 
+    # plt.style.use('dark_background')
 
     fig = plt.figure(1)
 
@@ -68,9 +70,6 @@ def plot_report(orig, recon, bbox, diff, cmap = mpl.cm.jet):
         ax.margins(0,0)
         ax.xaxis.set_major_locator(plt.NullLocator())
         ax.yaxis.set_major_locator(plt.NullLocator())
-        
-    # fig.suptitle("Galen Image Report", fontsize=14, fontweight='bold')
-    # fig.text(.5, .05, 'Galen Image Report', ha='center')
 
     plt.savefig('./outputs/fig.png', bbox_inches = 'tight')
 

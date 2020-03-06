@@ -131,3 +131,6 @@ dmypy.json
 
 # Weights folder
 weights/
+
+# MacOS stuff
+.DS_Store
