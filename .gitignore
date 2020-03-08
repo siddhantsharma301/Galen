@@ -76,6 +76,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+Galen/.ipynb_checkpoints
 notebooks/
 
 # IPython
