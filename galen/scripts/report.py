@@ -28,6 +28,7 @@ if __name__ == "__main__":
     # Set up CLI parser
     parser = argparse.ArgumentParser(description = 'Diagnose chest x-ray; either healthy or unhealthy')
     parser.add_argument('--image', required = True, help = 'Image to diagnose')
+    parser.add_argument('--model', required = True, help = 'Model to use for evaluation')
     parser.add_argument('--weights', required = False, help = 'Path to weights')
     parser.add_argument('--dir', required = False, default = './training/checkpoints/', help = 'Path to dir for weights')
     args = vars(parser.parse_args())
@@ -51,7 +52,7 @@ if __name__ == "__main__":
 
     # Load model
     print("Loading model...")
-    model = model_utils.load_model(weights=args['weights'], dir=args['dir'])
+    model = model_utils.load_model(args['model'], weights=args['weights'], dir=args['dir'])
 
     # Reconstruct image, convert to tensor, and post-process with blurring
     print("Reconstructing...")

@@ -13,7 +13,7 @@ import torch
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 
-def load_model(model, , weights):
+def load_model(model, weights=None, dir=None):
     """
     Load a trained model from indicated weights or dir
 
@@ -38,6 +38,9 @@ def load_model(model, , weights):
         model = vgg.VAE(device=device)
     else:
         raise ValueError("Model must be 'resnet' or 'vgg'!")
+
+    if weights is None:
+        weights = restore_latest_weights(dir)
 
     model.load_state_dict(torch.load(weights, map_location=device))
 
