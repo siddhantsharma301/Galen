@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 
 from functools import partial
 import torch
@@ -18,7 +18,7 @@ def activation_func(activation):
 
 class Conv2dAuto(nn.Conv2d):
     def __init__(self, *args, **kwargs):
-        super(Conv2dAuto, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.padding =  (self.kernel_size[0] // 2, self.kernel_size[1] // 2)
 
 
@@ -32,7 +32,7 @@ def conv_bn(in_channels, out_channels, conv, *args, **kwargs):
 
 class ResidualBase(nn.Module):
     def __init__(self, in_channels, out_channels, activation='relu'):
-        super(ResidualBase, self).__init__()
+        super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.activation = activation
@@ -56,7 +56,7 @@ class ResidualBase(nn.Module):
 
 class ResidualDownBlock(ResidualBase):
     def __init__(self, in_channels, out_channels, expansion=1, downsampling=1, conv=conv3x3, *args, **kwargs):
-        super(ResidualDownBlock, self).__init__(in_channels, out_channels, *args, **kwargs)
+        super().__init__(in_channels, out_channels, *args, **kwargs)
         self.expansion = expansion
         self.downsampling = downsampling
         self.conv = conv
@@ -77,7 +77,7 @@ class ResidualDownBlock(ResidualBase):
 class BasicDownBlock(ResidualDownBlock):
     expansion = 1
     def __init__(self, in_channels, out_channels, *args, **kwargs):
-        super(BasicDownBlock, self).__init__(in_channels, out_channels, *args, **kwargs)
+        super().__init__(in_channels, out_channels, *args, **kwargs)
         self.blocks = nn.Sequential(
             conv_bn(self.in_channels, self.out_channels, conv=self.conv, bias=False, stride=self.downsampling),
             activation_func(self.activation),
@@ -86,7 +86,7 @@ class BasicDownBlock(ResidualDownBlock):
 
 class ResidualDownLayer(nn.Module):
     def __init__(self, in_channels, out_channels, block=BasicDownBlock, n=1, *args, **kwargs):
-        super(ResidualDownLayer, self).__init__()
+        super().__init__()
         downsampling = 2 if in_channels != out_channels else 1
         self.blocks = nn.Sequential(
             block(in_channels , out_channels, *args, **kwargs, downsampling=downsampling),
@@ -140,7 +140,7 @@ class Encoder(nn.Module):
 
 class Deconv2dAuto(nn.ConvTranspose2d):
     def __init__(self, *args, **kwargs):
-        super(Deconv2dAuto, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.padding =  (self.kernel_size[0] // 2, self.kernel_size[1] // 2)
 
 
@@ -154,7 +154,7 @@ def convtranspose_bn(in_channels, out_channels, convtranspose, *args, **kwargs):
 
 class ResidualUpBlock(ResidualBase):
     def __init__(self, in_channels, out_channels, expansion=1, upsampling=2, conv=convtranspose3x3, *args, **kwargs):
-        super(ResidualUpBlock, self).__init__(in_channels, out_channels, *args, **kwargs)
+        super().__init__(in_channels, out_channels, *args, **kwargs)
         self.expansion = expansion
         self.upsampling = upsampling
         self.conv = conv
@@ -175,7 +175,7 @@ class ResidualUpBlock(ResidualBase):
 class BasicUpBlock(ResidualUpBlock):
     expansion = 1
     def __init__(self, in_channels, out_channels, use_padding=False, *args, **kwargs):
-        super(BasicUpBlock, self).__init__(in_channels, out_channels, *args, **kwargs)
+        super().__init__(in_channels, out_channels, *args, **kwargs)
         self.blocks = nn.Sequential(
             convtranspose_bn(self.in_channels, self.out_channels, convtranspose=self.conv, bias=False, stride=self.upsampling),
             activation_func(self.activation),
@@ -185,12 +185,13 @@ class BasicUpBlock(ResidualUpBlock):
 
 class ResidualUpLayer(nn.Module):
     def __init__(self, in_channels, out_channels, block=BasicUpBlock, n=1, use_padding=False, *args, **kwargs):
-        super(ResidualUpLayer, self).__init__()
+        super().__init__()
         upsampling = 2 if in_channels != out_channels else 1
         self.blocks = nn.Sequential(
             block(in_channels , out_channels, use_padding=use_padding, *args, **kwargs, upsampling=upsampling),
             *[block(out_channels * block.expansion, 
-                    out_channels, upsampling=1, *args, **kwargs) for _ in range(n - 1)])
+                    out_channels, upsampling=1, *args, **kwargs) for _ in range(n - 1)]
+        )
 
     def forward(self, x):
         x = self.blocks(x)
@@ -288,7 +289,7 @@ class VAE(nn.Module):
 
 class Discriminator(nn.Module):
     def __init__(self):
-        super(Discriminator, self).__init__()
+        super().__init__()
         self.model = nn.Sequential(*list(torchvision.models.vgg16(pretrained=True).children())[:-1])
 
         for name, params in self.model.named_parameters():
@@ -315,8 +316,6 @@ if __name__ == "__main__":
 
     vae = VAE(device=device)
     summary(vae, input_size=(3, 224, 224))
-
-    print('\n\n')
 
     disc = Discriminator().to(device)
     summary(disc, input_size=(3, 224, 224))
