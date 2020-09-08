@@ -98,6 +98,10 @@ class VAE(nn.Module):
         z = multi_norm.mul(std).add_(t_mean)
         return self.decoder(z), t_mean, t_logvar
 
+    def reconstruct(self, x):
+        x, _, _ = self.forward(x)
+        return x.permute(0, 2, 3, 1).cpu().detach().numpy()
+
 
 if __name__ == '__main__':
     # Test everything works
