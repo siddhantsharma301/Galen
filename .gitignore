@@ -78,8 +78,6 @@ target/
 .ipynb_checkpoints
 Galen/.ipynb_checkpoints
 notebooks/
-demo/
-report/
 
 # IPython
 profile_default/
@@ -113,9 +111,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-bin/
-activate/
-pyvenv.cfg
 
 # Spyder project settings
 .spyderproject
@@ -137,10 +132,6 @@ dmypy.json
 
 # Weights folder
 weights/
-share/
 
 # MacOS stuff
 .DS_Store
-
-# VSCode stuff
-.vscode/

@@ -89,3 +89,4 @@ if __name__ == "__main__":
     print("Image type: " + str(type(batch[0])))
     print("Done!")
     
+        
