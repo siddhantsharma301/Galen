@@ -135,3 +135,11 @@ weights/
 
 # MacOS stuff
 .DS_Store
+
+# Utils that aren't crucial
+bin/
+demo/
+galen/pyvenv.cfg
+pyvenv.cfg
+report/
+share/
