@@ -138,6 +138,7 @@ weights/
 
 # Utils that aren't crucial
 bin/
+include/
 demo/
 galen/pyvenv.cfg
 pyvenv.cfg
