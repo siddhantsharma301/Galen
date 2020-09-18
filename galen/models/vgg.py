@@ -93,15 +93,19 @@ class VAE(nn.Module):
     def encode(self, x):
         return self.encoder(x)
 
-    def decode(self, x):
-        return self.decoder(x)
+    def reparametrize(self, mu, logvar):
+        std = logvar.mul(0.5).exp_()
+        multi_norm = Variable(torch.FloatTensor(std.size()).normal_().to(self.device))
+        z = multi_norm.mul(std).add_(mu)
+        return z 
+
+    def decode(self, z):
+        return self.decoder(z)
 
     def forward(self, x):
-        t_mean, t_logvar = self.encoder(x)
-        std = t_logvar.mul(0.5).exp_()
-        multi_norm = Variable(torch.FloatTensor(std.size()).normal_().to(self.device))
-        z = multi_norm.mul(std).add_(t_mean)
-        return self.decoder(z), t_mean, t_logvar
+        mean, logvar = self.encode(x)
+        z = self.reparametrize(mean, logvar)
+        return self.decoder(z), mean, logvar
 
     def reconstruct(self, x):
         x, _, _ = self.forward(x)
