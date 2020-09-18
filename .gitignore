@@ -145,3 +145,4 @@ pyvenv.cfg
 report/
 share/
 opencv-python/
+galen/outputs/*.png
