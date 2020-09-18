@@ -71,7 +71,7 @@ def plot_report(orig, recon, bbox, diff, cmap = mpl.cm.jet):
         ax.xaxis.set_major_locator(plt.NullLocator())
         ax.yaxis.set_major_locator(plt.NullLocator())
 
-    plt.savefig('./outputs/fig.png', bbox_inches = 'tight')
+    plt.savefig('galen/outputs/fig.png', bbox_inches = 'tight')
 
 
 def reconstruction_grid(model, epoch, images, path='./training/gif/'):

@@ -43,7 +43,7 @@ def to_channels_first(img):
     return img
 
 
-def img_to_tensor(img, resize=True, clahe=True):
+def img_to_tensor(img, resize=True, resize_dims=(128, 128), clahe=True):
     """
     Convert image to Pytorch Tensor
 
@@ -53,8 +53,12 @@ def img_to_tensor(img, resize=True, clahe=True):
         NOTE: Assume `np.uint8` input dtype
     * resize
         OPTIONAL
-        Resize image to 128x128 (bool)
+        Resize image to `resize_dims` (bool)
         Default: True
+    * resize_dims
+        OPTIONAL
+        Resize to given size
+        Default: (128, 128)
     * clahe
         OPTIONAL 
         Apply CLAHE to image (bool)
@@ -64,7 +68,7 @@ def img_to_tensor(img, resize=True, clahe=True):
     Pytorch image Tensor
     """
     if resize:
-        img = cv2.resize(img, (128, 128), interpolation = cv2.INTER_AREA)
+        img = cv2.resize(img, resize_dims, interpolation = cv2.INTER_AREA)
     if clahe:
         img = clahe_image(img)
     img = img.astype('float32')

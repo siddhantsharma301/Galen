@@ -1,4 +1,9 @@
-#!/usr/bin/env python3
+"""
+VGG Network for Galen model
+Author: Siddhant Sharma, 2019
+"""
+__author__ = "Siddhant Sharma"
+
 
 import torch
 import torch.nn as nn
@@ -13,10 +18,10 @@ class Encoder(nn.Module):
         super(Encoder, self).__init__()
         self.latent = latent_dim
         self.padding1 = nn.ReflectionPad2d(3)
-        self.conv1 = nn.Conv2d(3, 64, (7, 7), padding_mode = 'valid')
-        self.conv2 = nn.Conv2d(64, 128, (3, 3), stride = 2, padding_mode = 'valid')
-        self.conv3 = nn.Conv2d(128, 256, (3, 3), stride = 2, padding_mode = 'valid')
-        self.conv4 = nn.Conv2d(256, 512, (3, 3), stride = 2, padding_mode = 'valid')
+        self.conv1 = nn.Conv2d(3, 64, (7, 7))
+        self.conv2 = nn.Conv2d(64, 128, (3, 3), stride = 2)
+        self.conv3 = nn.Conv2d(128, 256, (3, 3), stride = 2)
+        self.conv4 = nn.Conv2d(256, 512, (3, 3), stride = 2)
         self.t_mean = nn.Linear(512 * 15 * 15, self.latent)
         self.t_logvar = nn.Linear(512 * 15 * 15, self.latent)
         self.act = nn.ReLU()
@@ -46,7 +51,7 @@ class Decoder(nn.Module):
         self.latent = latent_dim
         self.fc1 = nn.Linear(self.latent, 64 * 64 * 64)
         self.conv_transpose = nn.ConvTranspose2d(64, 32, 3, stride = (2,2), padding_mode = 'zeros', output_padding = 1)
-        self.conv = nn.Conv2d(32, 3, 3, padding_mode = 'same')
+        self.conv = nn.Conv2d(32, 3, 3)
         self.relu = nn.ReLU()
         self.sig = nn.Sigmoid()
 

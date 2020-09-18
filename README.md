@@ -22,4 +22,7 @@ filtered out and images with diseases can be furthered investigated.
 An example of an anomaly detection network is a variational autoencoder (VAE). This form of machine learning uses an extremely simple idea to find anomalies: find the differences. A VAE takes an input image and tries to reconstruct it, giving an output image. The goal of the VAE is to make the output image similar to the input image. By using this simple characteristic, a VAE can be trained on “normal” images to find anomalies. If a VAE is trained on a dataset of healthy chest x-rays, when given an unhealthy chest x-ray, it should fail to create a proper output. By using image similarity algorithms, this image similarity can be measured and used to determine whether an input-output pair is healthy or anomalous. I propose the use of a variational autoencoder to use anomaly detection, not classification, for healthcare.
 
 ## Training GIF
-![Galen Training Demo](assets/training.gif)
+![Galen Training Demo](assets/training.gif)  
+
+## How to Run the Model?
+First, create a virtual environment in the parent directory of the actual code (AKA the directory that this readme is in). Example: `python3 -m venv galen`. Upon creating the virtual environment, activate it using `source galen/bin/activate` OUTSIDE of this parent directory. Then, `cd` back into this directory and run the following command: `pip3 -e .`. This adds the `galen` module to allow imports. Then, install dependencies and you should be good to go!

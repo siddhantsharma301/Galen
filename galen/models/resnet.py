@@ -1,4 +1,8 @@
-
+"""
+ResNet Network for Galen model
+Author: Siddhant Sharma, 2019
+"""
+__author__ = "Siddhant Sharma"
 
 from functools import partial
 import torch
