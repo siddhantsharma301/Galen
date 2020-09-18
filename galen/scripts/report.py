@@ -30,9 +30,8 @@ def create_parser():
     parser = argparse.ArgumentParser(description = 'Diagnose chest x-ray; either healthy or unhealthy')
     parser.add_argument('--image', required = True, help = 'Image to diagnose')
     parser.add_argument('--model', required = True, choices = ['resnet', 'vgg'], help = 'Model type to use')
-    parser.add_argument('--dir', required = False, default = './training/checkpoints/', help = 'Path to look for weights for given model')
+    parser.add_argument('--dir', required = False, help = 'Path to look for weights for given model')
     parser.add_argument('--weights', required = False, help = 'Path to weights')
-    parser.add_argument('--cuda', required = False, default = 'cpu', help = 'Use CUDA acceleration')
     return parser
 
 
@@ -83,7 +82,8 @@ if __name__ == "__main__":
 
     # Load model
     print("Loading model...")
-    model = model_utils.load_model(device=args['cuda'], model=args['model'], weights=args['weights'], dir=args['dir'])
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    model = model_utils.load_model(device, model_name=args['model'], weights=args['weights'], dir=args['dir'])
 
     # Reconstruct image, convert to tensor, and post-process with blurring
     print("Reconstructing...")
