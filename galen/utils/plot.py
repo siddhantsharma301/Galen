@@ -99,7 +99,7 @@ def reconstruction_grid(model, epoch, images, path='./training/gif/'):
     save_image(predictions, path + 'epoch_{:04d}.png'.format(epoch), normalize=True, nrow=4)
 
 
-def generate_gif(path='./training/gif/'):
+def generate_gif(path='galen/training/gif/'):
     """
     Generate a GIF from training recostructions for 
     super cool visuals

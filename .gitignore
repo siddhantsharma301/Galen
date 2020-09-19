@@ -146,3 +146,4 @@ report/
 share/
 opencv-python/
 galen/outputs/*.png
+galen/scripts/chexpert_trainer.py
