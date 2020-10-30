@@ -142,7 +142,7 @@ include/
 demo/
 galen/pyvenv.cfg
 pyvenv.cfg
-report/
+galen-report/
 share/
 opencv-python/
 galen/outputs/*.png
