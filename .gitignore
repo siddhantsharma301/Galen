@@ -141,9 +141,7 @@ bin/
 include/
 demo/
 galen/pyvenv.cfg
-galen/scripts/chexpert_trainer.py
 pyvenv.cfg
-galen-report/
 share/
 opencv-python/
 galen/outputs/*.png
