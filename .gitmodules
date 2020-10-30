@@ -1,0 +1,3 @@
+[submodule "galen-report"]
+	path = galen-report
+	url = https://github.com/siddhantsharma301/galen-report
