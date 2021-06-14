@@ -25,4 +25,4 @@ An example of an anomaly detection network is a variational autoencoder (VAE). T
 ![Galen Training Demo](assets/training.gif)  
 
 ## How to Run the Model?
-First, create a virtual environment in the parent directory of the actual code (AKA the directory that this readme is in). Example: `python3 -m venv galen`. Upon creating the virtual environment, activate it using `source galen/bin/activate` OUTSIDE of this parent directory. Then, `cd` back into this directory and run the following command: `pip3 -e .`. This adds the `galen` module to allow imports. Then, install dependencies and you should be good to go!
+First, create a virtual environment in the parent directory of the actual code (AKA the directory that this readme is in). Example: `python3 -m venv galen`. Upon creating the virtual environment, activate it using `source galen/bin/activate` OUTSIDE of this parent directory. Then, `cd` back into this directory and run the following command: `pip3 install -e .`. This adds the `galen` module to allow imports. Then, install dependencies and you should be good to go!
